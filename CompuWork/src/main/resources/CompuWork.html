@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CompuWork System</title>
+</head>
+<body>
+    <h1>CompuWork System</h1>
+    <ul>
+        <li><a th:href="@{/employees}">Employees</a></li>
+        <li><a th:href="@{/departments}">departments</a></li>
+        <li><a th:href="@{/reports}">Reports</a></li>
+    </ul>
+     <table>
+        <tr th:each="employee : ${employees}">
+            <td th:text="${employee.name}">Name</td>
+            <td th:text="${employee.department.name}">Department</td>
+            <td>
+                <a th:href="@{/employees/{id}(id=${employee.id})}">Edit</a>
+                <a th:href="@{/employees/{id}(id=${employee.id})}" th:method="delete">Delete</a>
+            </td>
+        </tr>
+    </table>
+    <form th:action="@{/employees}" th:method="post">
+        <input type="text" th:field="*{name}" placeholder="Name">
+        <input type="text" th:field="*{department.name}" placeholder="Department">
+        <button type="submit">Save</button>
+    </form> 
+
+    <script>
+        document.getElementById("Employee").addEventListener("submit", (event) => {
+          event.preventDefault();
+          const Department = document.getElementById('Department').value;
+          const getName = document.getElementById("getName").value;
+      
+          fetch("http://localhost:8080/empleados", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: getName, department: Department })
+          })
+          .then(response => response.json())
+          .then((data) => {
+            // handle successful response
+            console.log(data);
+          })
+          .catch((error) => {
+            // handle error
+            console.error(error);
+            document.getElementById('department').textContent = 'Error';
+          });
+        });
+      </script>
+
+</body> 
+</html>
